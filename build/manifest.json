@@ -1,0 +1,25 @@
+{
+  "short_name": "Sangit🎶",
+  "name": "Sangit🎶- Everything, Everywhere",
+  "icons": [
+    {
+      "src": "sangit.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "sangit1.ico",
+      "type": "image/x-icon",
+      "sizes": "128x128"
+    },
+    {
+      "src": "sangit2.ico",
+      "type": "image/x-icon",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
