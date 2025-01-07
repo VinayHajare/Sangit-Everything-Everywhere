@@ -1,21 +1,22 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { usePlayer } from "../../context/PlayerContext";
 import api from "../../utils/api";
 
 const SongPlayer = () => {
   const { currentSong, clearSong } = usePlayer();
-  const [audio, setAudio] = useState(null);
+  const audioRef = useRef(null); // Use ref for audio object
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
 
   const handleTimeUpdate = useCallback(() => {
-    if (audio) {
-      setProgress(audio.currentTime);
-      setDuration(audio.duration || 0);
+    if (audioRef.current) {
+      setProgress(audioRef.current.currentTime);
+      setDuration(audioRef.current.duration || 0);
     }
-  }, [audio]);
+  }, []);
 
   const handleSongEnd = useCallback(() => {
     clearSong();
@@ -23,63 +24,79 @@ const SongPlayer = () => {
     setProgress(0);
   }, [clearSong]);
 
-  useEffect(() => {
+  const fetchSongStream = useCallback(async () => {
     if (!currentSong) return;
 
-    const fetchSongStream = async () => {
-      try {
-        const response = await api.get(`/stream/play/${currentSong.id}`, {
-          responseType: "blob",
-        });
-        const url = URL.createObjectURL(response.data);
+    setIsLoading(true); // Set loading state
+    setError("");
 
-        const audioElement = new Audio(url);
-        audioElement.addEventListener("timeupdate", handleTimeUpdate);
-        audioElement.addEventListener("ended", handleSongEnd);
+    try {
+      const response = await api.get(`/stream/play/${currentSong.id}`, {
+        responseType: "blob",
+      });
+      const url = URL.createObjectURL(response.data);
 
-        if (audio) {
-          audio.pause();
-          audio.removeEventListener("timeupdate", handleTimeUpdate);
-          audio.removeEventListener("ended", handleSongEnd);
-        }
-
-        setAudio(audioElement);
-        setError("");
-      } catch {
-        setError("Failed to stream the song. Please try again.");
-        clearSong();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
+        audioRef.current.removeEventListener("ended", handleSongEnd);
       }
-    };
 
-    fetchSongStream();
+      const newAudio = new Audio(url);
+      newAudio.addEventListener("timeupdate", handleTimeUpdate);
+      newAudio.addEventListener("ended", handleSongEnd);
+
+      audioRef.current = newAudio; // Assign to ref
+      setIsLoading(false); // Stop loading
+    } catch {
+      setError("Failed to stream the song. Please try again.");
+      clearSong();
+      setIsLoading(false); // Stop loading
+    }
+  }, [currentSong, handleTimeUpdate, handleSongEnd, clearSong]);
+
+  useEffect(() => {
+    if (currentSong) {
+      fetchSongStream();
+    }
 
     return () => {
-      if (audio) {
-        audio.pause();
-        audio.removeEventListener("timeupdate", handleTimeUpdate);
-        audio.removeEventListener("ended", handleSongEnd);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
+        audioRef.current.removeEventListener("ended", handleSongEnd);
       }
     };
-  }, [currentSong, audio, handleTimeUpdate, handleSongEnd, clearSong]);
+  }, [currentSong, fetchSongStream, handleTimeUpdate, handleSongEnd]);
 
   const handlePlay = () => {
-    if (audio) {
-      audio.play();
-      setIsPlaying(true);
+    if (audioRef.current) {
+      audioRef.current
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+          setError("");
+        })
+        .catch((err) => {
+          console.error("Playback failed:", err);
+          setError(
+            "Playback blocked by the browser. Please interact with the page to allow playback."
+          );
+        });
     }
   };
 
   const handlePause = () => {
-    if (audio) {
-      audio.pause();
+    if (audioRef.current) {
+      audioRef.current.pause();
       setIsPlaying(false);
     }
   };
 
   const handleStop = () => {
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
       setIsPlaying(false);
       setProgress(0);
     }
@@ -109,20 +126,20 @@ const SongPlayer = () => {
           <div className="flex justify-center items-center gap-4 mb-4">
             <button
               onClick={handlePlay}
-              disabled={isPlaying}
+              disabled={isPlaying || isLoading} // Disable during loading or playback
               className={`py-2 px-4 rounded ${
-                isPlaying
+                isPlaying || isLoading
                   ? "bg-gray-600"
                   : "bg-music-primary hover:bg-green-600"
               }`}
             >
-              Play
+              {isLoading ? "Loading..." : "Play"}
             </button>
             <button
               onClick={handlePause}
-              disabled={!isPlaying}
+              disabled={!isPlaying || isLoading}
               className={`py-2 px-4 rounded ${
-                isPlaying
+                isPlaying && !isLoading
                   ? "bg-music-primary hover:bg-green-600"
                   : "bg-gray-600"
               }`}
@@ -131,6 +148,7 @@ const SongPlayer = () => {
             </button>
             <button
               onClick={handleStop}
+              disabled={isLoading}
               className="py-2 px-4 rounded bg-red-600 hover:bg-red-700"
             >
               Stop

@@ -35,7 +35,7 @@ const PlaybackHistory = () => {
       <div className="space-y-4">
         {history.map((entry) => (
           <div
-            key={entry.songId}
+            key={entry.id}
             className="bg-gray-800 rounded p-4 shadow hover:shadow-lg transition"
           >
             <h3 className="text-xl font-semibold">{entry.songTitle}</h3>

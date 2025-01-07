@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import api from "../../utils/api";
 
@@ -36,9 +37,11 @@ const PlaylistList = () => {
             className="bg-gray-800 rounded p-4 shadow hover:shadow-lg transition"
           >
             <h3 className="text-xl font-semibold">{playlist.name}</h3>
-            <button className="mt-4 bg-music-primary text-black py-2 px-4 rounded hover:bg-green-600">
-              View Playlist
-            </button>
+            <Link to={`/playlists/${playlist.id}`}>
+              <button className="mt-4 bg-music-primary text-black py-2 px-4 rounded hover:bg-green-600">
+                View Playlist
+              </button>
+            </Link>
           </div>
         ))}
       </div>

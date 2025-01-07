@@ -11,10 +11,16 @@ const PlaylistCreate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/playlists/create", {
-        playlistName,
-        username: user.username, // use the username from the authenticated user
+      const formData = new FormData();
+      formData.append("playlistName", playlistName);
+      formData.append("username", user.username);
+  
+      await api.post("/playlists/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
+  
       setSuccess(true);
       setError("");
       setPlaylistName("");
@@ -23,6 +29,7 @@ const PlaylistCreate = () => {
       setSuccess(false);
     }
   };
+  
 
   return (
     <div

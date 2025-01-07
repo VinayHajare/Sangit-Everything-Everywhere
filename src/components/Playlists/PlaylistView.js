@@ -28,8 +28,13 @@ const PlaylistView = () => {
   // Handle adding a song to the playlist
   const handleAddSong = async () => {
     try {
-      await api.post(`/playlists/${playlistId}/addSong`, {
-        songId: songIdToAdd,
+      const formData = new FormData();
+      formData.append("songId", songIdToAdd);
+
+      await api.post(`/playlists/${playlistId}/addSong`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       setSongIdToAdd("");
       setSuccessMessage("Song added to the playlist successfully!");
@@ -46,8 +51,13 @@ const PlaylistView = () => {
   // Handle removing a song from the playlist
   const handleRemoveSong = async (songIdToRemove) => {
     try {
-      await api.delete(`/playlists/${playlistId}/removeSong`, {
-        songId: songIdToRemove,
+      const formData = new FormData();
+      formData.append("songId", songIdToRemove);
+
+      await api.delete(`/playlists/${playlistId}/removeSong`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       setSuccessMessage("Song removed from the playlist successfully!");
       setError("");

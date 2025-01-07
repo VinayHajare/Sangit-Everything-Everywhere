@@ -7,32 +7,49 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Track authentication state
 
   useEffect(() => {
     const token = tokenManager.getToken();
     if (token) {
       try {
-        const decodedToken = jwtDecode(token);
-        const username = decodedToken?.username;
+        const decodedToken = jwtDecode(token); // Decode the token
+        console.log("Decoded Token: ", decodedToken);
+        const isTokenExpired = decodedToken.exp * 1000 < Date.now(); // Check expiration
+        if (isTokenExpired) {
+          tokenManager.clearToken(); // Clear expired token
+          setUser(null); // Reset user session
+          setLoading(false);
+          return;
+        }
+  
+        const username = decodedToken?.sub;
         if (username) {
           const fetchUser = async () => {
             try {
-              const response = await api.get(`/profile/${username}`);
-              setUser(response.data);
+              const response = await api.get(`/profile/${username}`); // Fetch user data
+              setUser(response.data); // Restore user session
             } catch (error) {
               console.error("Fetch User Failed: ", error);
+              tokenManager.clearToken(); // Clear token if fetching fails
               setUser(null);
+            } finally {
+              setLoading(false);
             }
           };
           fetchUser();
         }
       } catch (error) {
         console.error("Decode Token Failed: ", error);
-        tokenManager.clearToken();
+        tokenManager.clearToken(); // Clear invalid token
         setUser(null);
+        setLoading(false);
       }
+    } else {
+      setLoading(false);
     }
   }, []);
+  
 
   const login = async (email, password) => {
     try {
@@ -50,7 +67,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

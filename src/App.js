@@ -108,7 +108,7 @@ const App = () => {
               />
             </Routes>
 
-            <div className="fixed bottom-0 w-full">
+            <div className="sticky bottom-0 w-full">
               <SongPlayer />
             </div>
           </div>

@@ -3,8 +3,8 @@ import { useAuth } from "../../hooks/useAuth";
 import api from "../../utils/api";
 
 const UserProfile = () => {
-  const { user } = useAuth(); // Get the logged-in user
-  const [profile, setProfile] = useState(null); // User profile details
+  const { user, logout } = useAuth(); // Added logout
+  const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -64,7 +64,9 @@ const UserProfile = () => {
   return (
     <div className="bg-music-background text-white p-6">
       {error && <div className="bg-red-500 p-3 rounded mb-4">{error}</div>}
-      {success && <div className="bg-green-500 p-3 rounded mb-4">{success}</div>}
+      {success && (
+        <div className="bg-green-500 p-3 rounded mb-4">{success}</div>
+      )}
 
       <div className="space-y-4">
         <div>
@@ -130,6 +132,12 @@ const UserProfile = () => {
               className="mt-4 bg-music-primary py-2 px-4 rounded text-black hover:bg-green-600"
             >
               Edit Profile
+            </button>
+            <button
+              onClick={logout}
+              className="mt-8 bg-red-600 py-2 px-2 rounded text-white hover:bg-red-700"
+            >
+              Logout
             </button>
           </>
         )}
