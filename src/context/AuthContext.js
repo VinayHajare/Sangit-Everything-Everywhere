@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const decodedToken = jwtDecode(token); // Decode the token
-        console.log("Decoded Token: ", decodedToken);
+        
         const isTokenExpired = decodedToken.exp * 1000 < Date.now(); // Check expiration
         if (isTokenExpired) {
           tokenManager.clearToken(); // Clear expired token

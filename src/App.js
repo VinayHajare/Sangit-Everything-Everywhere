@@ -23,90 +23,92 @@ const App = () => {
       <PlayerProvider>
         <Router>
           <div className="relative">
-            <Routes>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <PrivateRoute>
-                    <DashboardPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/songs"
-                element={
-                  <PrivateRoute>
-                    <SongList />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/songs/search"
-                element={
-                  <PrivateRoute>
-                    <SongSearch />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/playlists"
-                element={
-                  <PrivateRoute>
-                    <PlaylistList />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/playlists/create"
-                element={
-                  <PrivateRoute>
-                    <PlaylistCreate />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/playlists/:playlistId"
-                element={
-                  <PrivateRoute>
-                    <PlaylistView />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/discover"
-                element={
-                  <PrivateRoute>
-                    <RecommendedSongs />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/history"
-                element={
-                  <PrivateRoute>
-                    <PlaybackHistory />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <PrivateRoute>
-                    <ProfilePage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/follow"
-                element={
-                  <PrivateRoute>
-                    <FollowArtist />
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
+            <div className="pb-20 bg-music-background"> {/* Add padding-bottom to match the height of the SongPlayer */}
+              <Routes>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <PrivateRoute>
+                      <DashboardPage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/songs"
+                  element={
+                    <PrivateRoute>
+                      <SongList />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/songs/search"
+                  element={
+                    <PrivateRoute>
+                      <SongSearch />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/playlists"
+                  element={
+                    <PrivateRoute>
+                      <PlaylistList />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/playlists/create"
+                  element={
+                    <PrivateRoute>
+                      <PlaylistCreate />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/playlists/:playlistId"
+                  element={
+                    <PrivateRoute>
+                      <PlaylistView />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/discover"
+                  element={
+                    <PrivateRoute>
+                      <RecommendedSongs />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/history"
+                  element={
+                    <PrivateRoute>
+                      <PlaybackHistory />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <PrivateRoute>
+                      <ProfilePage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/follow"
+                  element={
+                    <PrivateRoute>
+                      <FollowArtist />
+                    </PrivateRoute>
+                  }
+                />
+              </Routes>
+            </div>
 
             <div className="sticky bottom-0 w-full">
               <SongPlayer />

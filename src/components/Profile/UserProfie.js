@@ -98,18 +98,20 @@ const UserProfile = () => {
                 className="w-full p-3 bg-gray-800 rounded text-white"
               />
             </div>
-            <button
-              onClick={handleSave}
-              className="mt-4 bg-music-primary py-2 px-4 rounded text-black hover:bg-green-600"
-            >
-              Save Changes
-            </button>
-            <button
-              onClick={handleEditToggle}
-              className="mt-4 ml-4 bg-gray-600 py-2 px-4 rounded text-white hover:bg-gray-700"
-            >
-              Cancel
-            </button>
+            <div className="flex space-x-4 mt-4">
+              <button
+                onClick={handleSave}
+                className="bg-music-primary py-2 px-4 rounded text-black hover:bg-green-600"
+              >
+                Save Changes
+              </button>
+              <button
+                onClick={handleEditToggle}
+                className="bg-gray-600 py-2 px-4 rounded text-white hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+            </div>
           </>
         ) : (
           <>
@@ -127,18 +129,20 @@ const UserProfile = () => {
                 />
               )}
             </div>
-            <button
-              onClick={handleEditToggle}
-              className="mt-4 bg-music-primary py-2 px-4 rounded text-black hover:bg-green-600"
-            >
-              Edit Profile
-            </button>
-            <button
-              onClick={logout}
-              className="mt-8 bg-red-600 py-2 px-2 rounded text-white hover:bg-red-700"
-            >
-              Logout
-            </button>
+            <div className="flex flex-col space-y-4 mt-4">
+              <button
+                onClick={handleEditToggle}
+                className="bg-music-primary py-2 px-4 rounded text-black hover:bg-green-600"
+              >
+                Edit Profile
+              </button>
+              <button
+                onClick={logout}
+                className="bg-red-600 py-2 px-4 rounded text-white hover:bg-red-700"
+              >
+                Logout
+              </button>
+            </div>
           </>
         )}
       </div>
